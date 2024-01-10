@@ -24,8 +24,8 @@ function Page() {
                 router.push('/sign-in')
             }
         },
-        retry: true,
-        retryDelay: 500
+        // retry: true,
+        // retryDelay: 500
     })
 
     return (
