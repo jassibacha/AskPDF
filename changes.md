@@ -10,18 +10,26 @@ If you want to build using more recent/up-to-date modules, you can follow along 
 
 Any and all uses of Kinde's `getUser()` are a bit different, they require `await` in the newest version [[info here](https://kinde.com/docs/developer-tools/nextjs-sdk/#migration-guide)]
 
+**ORIGINAL:**
 ```jsx
-BEFORE: 
-const user = getUser()
-
-NEW VERSION:
-const user = await getUser()
+const FunctionName = () => {
+    const { getUser } = getKindeServerSession()
+    const user = getUser()
+    ...
+```
+**NEW VERSION:**
+```jsx
+const FunctionName = async () => {
+    const { getUser } = getKindeServerSession()
+    const user = await getUser()
+    ...
 ```
 
-By [2:18:29](https://www.youtube.com/watch?v=ucX2zXAZ1I0&t=8309s) I had to add `await getUser()` on:
+A list of areas I had to add/update `await getUser()` on:
 - `src/app/dashboard/page.tsx` - come back and link these later
 - `src/trpc/index.ts` - come back and link these later
 - [2:44:58] `src/trpc/trpc.ts` 
+- [3:29:12] `src/app/dashboard/[fileid]/page.tsx`
 
 
 Note: This also means you need to update certain functions like `src/app/dashboard/page.tsx` to `async` when you call await inside.
