@@ -6,8 +6,8 @@ import { createUploadthing, type FileRouter } from "uploadthing/next"
 import { PDFLoader } from "langchain/document_loaders/fs/pdf"
 import { OpenAIEmbeddings } from "langchain/embeddings/openai"
 import {PineconeStore} from 'langchain/vectorstores/pinecone'
-// import { getPineconeClient } from "@/lib/pinecone"
-import { pinecone } from "@/lib/pinecone"
+import { getPineconeClient } from "@/lib/pinecone" // New
+// import { pinecone } from "@/lib/pinecone" // Old
 
 const f = createUploadthing();
 
@@ -45,7 +45,7 @@ export const ourFileRouter = {
         const pageLevelDocs = await loader.load();
 
         const pagesAmt = pageLevelDocs.length
-        // const pinecone = await getPineconeClient() // Old Version Tweak
+        const pinecone = await getPineconeClient() // Old Version Tweak
         // vectorize and index entire document
         const pineconeIndex = pinecone.Index("askpdf")
 
