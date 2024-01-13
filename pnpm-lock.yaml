@@ -64,13 +64,16 @@ dependencies:
     version: 3.2.0
   langchain:
     specifier: ^0.1.2
-    version: 0.1.2(@pinecone-database/pinecone@1.1.3)
+    version: 0.1.2(@pinecone-database/pinecone@1.1.3)(pdf-parse@1.1.1)
   lucide-react:
     specifier: ^0.308.0
     version: 0.308.0(react@18.2.0)
   next:
     specifier: ^14.0.4
     version: 14.0.4(react-dom@18.2.0)(react@18.2.0)
+  pdf-parse:
+    specifier: ^1.1.1
+    version: 1.1.1
   react:
     specifier: ^18
     version: 18.2.0
@@ -2135,7 +2138,6 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.3
-    dev: true
 
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -3313,7 +3315,7 @@ packages:
       json-buffer: 3.0.1
     dev: true
 
-  /langchain@0.1.2(@pinecone-database/pinecone@1.1.3):
+  /langchain@0.1.2(@pinecone-database/pinecone@1.1.3)(pdf-parse@1.1.1):
     resolution: {integrity: sha512-sJbVvIabjmsKDsIdfSiojHOg1EXbVsuVH6Y12rproGwYNRdQZ5zhikW+RttuRSmmEfCVfaGV5++nzYes9/jVAg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -3490,6 +3492,7 @@ packages:
       ml-distance: 4.0.1
       openapi-types: 12.1.3
       p-retry: 4.6.2
+      pdf-parse: 1.1.1
       uuid: 9.0.1
       yaml: 2.3.4
       zod: 3.22.4
@@ -3869,6 +3872,10 @@ packages:
     engines: {node: '>=10.5.0'}
     dev: false
 
+  /node-ensure@0.0.0:
+    resolution: {integrity: sha512-DRI60hzo2oKN1ma0ckc6nQWlHU69RH6xN0sjQTjMpChPfTYvKZdcQFfdYK2RWbJcKyUizSIy/l8OTGxMAM1QDw==}
+    dev: false
+
   /node-fetch@2.7.0(encoding@0.1.13):
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
     engines: {node: 4.x || >=6.0.0}
@@ -4113,6 +4120,16 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /pdf-parse@1.1.1:
+    resolution: {integrity: sha512-v6ZJ/efsBpGrGGknjtq9J/oC8tZWq0KWL5vQrk2GlzLEQPUDB1ex+13Rmidl1neNN358Jn9EHZw5y07FFtaC7A==}
+    engines: {node: '>=6.8.1'}
+    dependencies:
+      debug: 3.2.7
+      node-ensure: 0.0.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /pdfjs-dist@3.11.174:
     resolution: {integrity: sha512-TdTZPf1trZ8/UFu5Cx/GXB7GZM30LT+wWUNfsi6Bq8ePLnb+woNKtDymI2mxZYBpMbonNFqKmiz684DIfnd8dA==}
