@@ -1,8 +1,8 @@
-### This guide is updated as of Jan 10, 2023.
+### This guide is updated as of Jan 13, 2023.
 
 Note: To be able to build this app exactly as intended, you can use Josh's [`pnmp-lock.yaml` file](https://github.com/joschan21/quill/blob/master/pnpm-lock.yaml) to get his exact versions of all node_modules. 
 
-If you want to build using more recent/up-to-date modules, you can follow along here.
+If you want to build using more recent/up-to-date modules, you can follow along here:
 
 ## Kinde's 'getUser()' requires await now [[1:27:12](https://www.youtube.com/watch?v=ucX2zXAZ1I0&t=5233s)]
 

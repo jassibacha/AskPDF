@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 type StreamResponse = {
     addMessage: () => void,
     message: string,
-    handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    handleInputChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
     isLoading: boolean
 }
 
@@ -47,7 +47,7 @@ export const ChatContextProvider = ({ fileId, children }: Props) => {
 
     const addMessage = () => sendMessage({ message })
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(event.target.value)
     }
     

@@ -1,6 +1,6 @@
 import { db } from "@/db"
 import { SendMessageValidator } from "@/lib/validators/SendMessageValidator"
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/dist/types/server"
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
 import { NextRequest } from "next/server"
 
 import { OpenAIEmbeddings } from "langchain/embeddings/openai"
