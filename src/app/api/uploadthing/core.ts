@@ -53,7 +53,7 @@ export const ourFileRouter = {
           embeddings, 
           {
             pineconeIndex,
-            //namespace: createdFile.id
+            namespace: createdFile.id
           }
         )
 
