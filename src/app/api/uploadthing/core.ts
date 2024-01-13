@@ -5,9 +5,9 @@ import { createUploadthing, type FileRouter } from "uploadthing/next"
 
 import { PDFLoader } from "langchain/document_loaders/fs/pdf"
 import { OpenAIEmbeddings } from "langchain/embeddings/openai"
-import {PineconeStore} from 'langchain/vectorstores/pinecone'
-import { getPineconeClient } from "@/lib/pinecone" // New
-// import { pinecone } from "@/lib/pinecone" // Old
+import { PineconeStore } from 'langchain/vectorstores/pinecone'
+// import { getPineconeClient } from "@/lib/pinecone" // Old
+import { pinecone } from "@/lib/pinecone" // New
 
 const f = createUploadthing();
 
@@ -39,16 +39,13 @@ export const ourFileRouter = {
       try {
         const response = await fetch(file.url)
         const blob = await response.blob()
-
         const loader = new PDFLoader(blob)
-
         const pageLevelDocs = await loader.load();
-
         const pagesAmt = pageLevelDocs.length
-        const pinecone = await getPineconeClient() // Old Version Tweak
+
+        //const pinecone = await getPineconeClient() // Old Version Tweak
         // vectorize and index entire document
         const pineconeIndex = pinecone.Index("askpdf")
-
         const embeddings = await new OpenAIEmbeddings({
           openAIApiKey: process.env.OPENAI_API_KEY,
         })
@@ -58,7 +55,7 @@ export const ourFileRouter = {
           embeddings, 
           {
             pineconeIndex,
-            namespace: createdFile.id
+            //namespace: createdFile.id
           }
         )
 
@@ -72,6 +69,8 @@ export const ourFileRouter = {
         })
 
       } catch (err) {
+        console.dir(err, { depth: null });
+        console.log(`Error Type: ${typeof err}\n Error:${err}`);
         await db.file.update({
           data: {
             uploadStatus: "FAILED",
