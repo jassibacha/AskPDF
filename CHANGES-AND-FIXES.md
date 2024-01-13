@@ -82,7 +82,9 @@ Okay this one actually took me a while, I couldn't see any errors but I wasn't g
 
 Shoutouts to the Discord and everyone who was dealing with this, I had to navigate a few fixes to figure everything out, but with [SiddarthPant](https://github.com/SiddharthPant/)'s fix from the Discord I managed to get the Namespaces updating.
 
-`src/lib/pinecone.ts` - Using the newer config that Josh showed
+>  **OpenAI Credits:** You need to confirm that your OpenAI account has credits available, your free credits can expire over time! I checked and mine were expired (you can see they're red in the bar in [https://platform.openai.com/usage](https://platform.openai.com/usage) instead of green if they're expired.) To correct this, either make a new account, or throw $5 into your account so you have working credits. (If you need to throw money onto your account maybe give it 5-10 minutes as well?)
+
+**`src/lib/pinecone.ts`** - Using the newer config that Josh showed
 
 ```ts
 import { Pinecone } from "@pinecone-database/pinecone";
@@ -94,9 +96,9 @@ export const pinecone = new Pinecone({
 ```
 *Note: I moved the environment call to the `.env` as well, just seemed cleaner in case I needed to edit it down the road.*
 
-`src/app/api/uploadthing/core.ts` - Tweaks in here, removing namespace especially and added some better logging for the `catch`. Note there's a bunch of '...' areas in here to make the code smaller, copy the code you need. :)
+**`src/app/api/uploadthing/core.ts`** - Tweaks in here, removing namespace especially and added some better logging for the `catch`. Note there's a bunch of '...' areas in here to make the code smaller, copy the code you need.
 ```ts
-...other imports...
+// ... other imports ...
 
 import { PDFLoader } from "langchain/document_loaders/fs/pdf"
 import { OpenAIEmbeddings } from "langchain/embeddings/openai"
@@ -110,10 +112,10 @@ export const ourFileRouter = {
   pdfUploader: f({ pdf: { maxFileSize: "4MB" } })
     
     .middleware(async ({ req }) => {
-        ...
+        // ... middleware logic ...
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      ...
+      // ... createdFile const ...
 
       try {
         const response = await fetch(file.url)
@@ -133,18 +135,18 @@ export const ourFileRouter = {
           embeddings, 
           {
             pineconeIndex,
-            //namespace: createdFile.id // Removing this got it working
+            namespace: createdFile.id 
           }
         )
 
-        ...
+        // ...additional logic...
 
       } catch (err) {
         // Super awesome error logging
         console.dir(err, { depth: null });
         console.log(`Error Type: ${typeof err}\n Error:${err}`);
 
-        ...
+        // ...error handling etc
       }
     }),
 } satisfies FileRouter
@@ -152,6 +154,36 @@ export const ourFileRouter = {
 export type OurFileRouter = typeof ourFileRouter;
 ```
 
-One thing to note: You need to confirm that your OpenAI account has credits available, your free credits can expire over time! I checked and mine were expired (you can see they're red in the bar in [https://platform.openai.com/usage](https://platform.openai.com/usage) instead of green if they're expired.) To correct this, either make a new account, or throw $5 into your account so you have working credits.
+**`src/app/api/message/route.ts`**
+```ts
+// ... other imports ...
+
+import { OpenAIEmbeddings } from "langchain/embeddings/openai"
+import { pinecone } from "@/lib/pinecone"
+import { PineconeStore } from "langchain/vectorstores/pinecone"
+import { openai } from "@/lib/openai"
+import { OpenAIStream, StreamingTextResponse } from "ai"
+
+export const POST = async (request: NextRequest) => {
+    // ...initial setup...
+
+    // 1: Vectorize message
+    const embeddings = await new OpenAIEmbeddings({
+        openAIApiKey: process.env.OPENAI_API_KEY,
+    })
+
+    const pineconeIndex = pinecone.Index("askpdf")
+
+    const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
+        pineconeIndex,
+        namespace: file.id
+    })
+
+    // ...additional logic...
+}
+```
+
+
+
 
 
