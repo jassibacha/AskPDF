@@ -96,7 +96,7 @@ export const pinecone = new Pinecone({
 ```
 *Note: I moved the environment call to the `.env` as well, just seemed cleaner in case I needed to edit it down the road.*
 
-**`src/app/api/uploadthing/core.ts`** - Tweaks in here, removing namespace especially and added some better logging for the `catch`. Note there's a bunch of '...' areas in here to make the code smaller, copy the code you need.
+**`src/app/api/uploadthing/core.ts`** 
 ```ts
 // ... other imports ...
 
@@ -153,6 +153,7 @@ export const ourFileRouter = {
 
 export type OurFileRouter = typeof ourFileRouter;
 ```
+*Note: I had originally commented out the `namespace: createdFile.id` but I realized it's necessary in order for Pinecone to be able to separate your vectors per file, so I reworked this.*
 
 **`src/app/api/message/route.ts`**
 ```ts
