@@ -31,7 +31,7 @@ A list of areas I had to add/update `await getUser()` on:
 - [2:44:58] `src/trpc/trpc.ts` 
 - [3:29:12] `src/app/dashboard/[fileid]/page.tsx`
 - [4:19:54] `src/app/api/uploadthing/core.ts`
-
+- [6:42:08] `src/app/api/message/route.ts`
 
 Note: This also means you need to update certain functions like `src/app/dashboard/page.tsx` to `async` when you call await inside.
 
@@ -55,3 +55,26 @@ And there was also a set of TypeSafe errors inside of `src/app/api/uploadthing/c
 4. Check what version is selected, I swapped it to `Use Workspace Version` and problem solved.
 
 *For a bit more info on why the VSCode version is different, and how to change the version of VSCode (if you want) take a look at the [VSCode docs here](https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-newer-typescript-versions).*
+
+## Streaming API Response in real-time [[6:42:15](https://youtu.be/ucX2zXAZ1I0?si=FviZ3aL-kwQbgO8D&t=24135)]
+### Rework of `userId`
+
+I noticed a TypeScript error in VScode when setting this up as 
+```jsx
+const { getUser } = getKindeServerSession()
+const user = await getUser()
+
+const { id: userId } = user
+```
+`Property 'id' does not exist on type 'KindeUser | null'.`
+
+Fix:
+
+```jsx
+const { getUser } = getKindeServerSession()
+const user = await getUser()
+// Use optional chaining to access 'id' property
+const userId = user?.id
+```
+
+With this modification, if `user` is `null` or `undefined`, `userId` will also be `undefined`, and the check `if (!userId)` will handle the unauthorized case as before. If `user` is not `null` or `undefined`, `userId`  will hold its `id` property.
