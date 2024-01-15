@@ -186,5 +186,27 @@ export const POST = async (request: NextRequest) => {
 
 
 
+## Optimistic Message Updates, Passing Ref TS Error [[8:53:48](https://youtu.be/ucX2zXAZ1I0?si=KjHQz1F9XiJxEWrR&t=32028)]
 
+After doing Josh's update to pass the ref from `Messages.tsx` into `Message.tsx` I got a TS Error:
 
+```
+Component definition is missing display name
+```
+
+This was happening because ESLint cannot automatically infer a display name for the component when we use forwardRef. This display name is useful for debugging, especially when inspecting components in React DevTools.
+
+To resolve this issue, we can explicitly set a display name for the Message component. This can be done by assigning a displayName property to the component after you define it. Here's how:
+
+```tsx
+const Message = forwardRef<HTMLDivElement, MessageProps>(({ 
+    message, 
+    isNextMessageSamePerson
+}: ref) => {
+    // ... Existing Code ...
+});
+
+Message.displayName = 'Message'; // Add this line!
+
+export default Message;
+```
