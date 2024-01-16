@@ -30,6 +30,8 @@ A list of areas I had to add/update `await getUser()` on:
 - [3:29:12] `src/app/dashboard/[fileid]/page.tsx`
 - [4:19:54] `src/app/api/uploadthing/core.ts`
 - [6:42:08] `src/app/api/message/route.ts`
+- [9:03:21] `src/app/pricing/page.tsx`
+- [9:28:05] `src/lib/stripe.ts`
 
 Note: This also means you need to update certain functions like `src/app/dashboard/page.tsx` to `async` when you call await inside.
 
@@ -209,4 +211,23 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(({
 Message.displayName = 'Message'; // Add this line!
 
 export default Message;
+```
+
+
+## Stripe getUserSubscriptionPlan() apiVersion issue [[9:29:26](https://youtu.be/ucX2zXAZ1I0?si=KjHQz1F9XiJxEWrR&t=32028)]
+
+I got an on the `src/lib/stripe.ts` here after installing Stripe: `Type '"2023-08-16"' is not assignable to type '"2023-10-16"'.` this occured on the line where apiVersion is set in the stripe object initialization.
+
+**`src/lib/stripe.ts`**
+```ts
+// ... imports ...
+
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
+  apiVersion: '2023-08-16', // Update this to 2023-10-16 worked for me
+  typescript: true,
+})
+
+export async function getUserSubscriptionPlan() {
+  // ... function logic ...
+}
 ```

@@ -4,52 +4,105 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { privateProcedure, publicProcedure, router } from "./trpc";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
+import { absoluteUrl } from "@/lib/utils";
+import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
+import { PLANS } from "@/config/stripe";
 
 export const appRouter = router({
     authCallback: publicProcedure.query(async () => {
-
-        //console.log('authCallback trpc route firing')
+        // Get the user from the KindeServer session
         const { getUser } = getKindeServerSession()
-        //console.log('authCallback: awaiting getUser')
         const user = await getUser()
-        //console.log('authCallback, user:', user)
-
+    
+        // If the user is not authenticated, throw an error
         if (!user || !user.id || !user.email) throw new TRPCError({ code: 'UNAUTHORIZED' })
-
-        // if (user.id) {
-        //     console.log('User id found', user.id)
-        // }
-
-        // Check if user exists in database
+    
+        // Check if user exists in the database
         const dbUser = await db.user.findFirst({
             where: {
                 id: user.id
             }
         })
-
-        // User doesn't exist in db, create user in db
+    
+        // If the user doesn't exist in the database, create a new user
         if (!dbUser) {
-            //console.log('dbUser not found')
             await db.user.create({
                 data: {
                     id: user.id,
                     email: user.email
                 }
             })
-        } else {
-            //console.log('dbUser found', dbUser.email)
         }
-
+    
+        // Return a success response
         return { success: true }
     }),
+    // Get user files from the database
     getUserFiles: privateProcedure.query(async ({ ctx }) => {
+        // Extract the user ID from the context
         const { userId } = ctx
-
+    
+        // Query the database for files belonging to the user
         return await db.file.findMany({
             where: {
                 userId
             }
         })
+    }),
+    /**
+     * Creates a Stripe session for managing billing
+     * @param ctx - The context object containing user information
+     * @returns The URL of the Stripe session
+     * @throws TRPCError with code 'UNAUTHORIZED' if the user is not authenticated or authorized
+     */
+    createStripeSession: privateProcedure.mutation(async ({ ctx }) => {
+        const { userId } = ctx
+
+        const billingUrl = absoluteUrl("/dashboard/billing")
+
+        if (!userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
+
+        // Retrieve the user from the database
+        const dbUser = await db.user.findFirst({
+            where: {
+                id: userId
+            }
+        })
+
+        if (!dbUser) throw new TRPCError({ code: 'UNAUTHORIZED' })
+
+        // Get the user's subscription plan
+        const subscriptionPlan = await getUserSubscriptionPlan()
+
+        if (subscriptionPlan.isSubscribed && dbUser.stripeCustomerId) {
+            // Create a billing portal session if the user is already subscribed and has a Stripe customer ID
+            const stripeSession = await stripe.billingPortal.sessions.create({
+                customer: dbUser.stripeCustomerId,
+                return_url: billingUrl
+            })
+
+            return { url: stripeSession.url }
+        }
+
+        // Create a checkout session for the user to subscribe to the "Pro" plan
+        const stripeSession = await stripe.checkout.sessions.create({
+            success_url: billingUrl,
+            cancel_url: billingUrl,
+            payment_method_types: ['card', 'paypal'],
+            mode: 'subscription',
+            billing_address_collection: 'auto',
+            line_items: [
+                {
+                    price: PLANS.find((plan) => plan.name === "Pro")?.price.priceIds.test, // Will need to swap to production
+                    quantity: 1
+                }
+            ],
+            metadata: {
+                userId: userId
+            }
+        })
+
+        return { url: stripeSession.url }
     }),
     getFileMessages: privateProcedure
         .input(
