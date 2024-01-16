@@ -57,9 +57,6 @@ function BillingForm({ subscriptionPlan }: BillingFormProps) {
           </CardFooter>
         </Card>
       </form>
-    <div className="c">
-
-    </div>
     </MaxWidthWrapper>
   )
 }
