@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx"
+import { Metadata } from "next";
 import { twMerge } from "tailwind-merge"
 
 /**
@@ -27,4 +28,46 @@ export function absoluteUrl(path: string) {
 
   // If the VERCEL_URL environment variable is not set, use localhost as the base URL for development SSR
   return `http://localhost:3000${path}`
+}
+
+export function constructMetadata({
+  title = "AskPDF - AI-Powered PDF Generator",
+  description = "AskPDF is a free and open-source PDF analyzer powered by AI.",
+  image = "/social-img.jpg", // TODO: Update this
+  icons = "/favicon.ico", // TODO: Update this
+  noIndex = true,
+}: {
+  title?: string
+  description?: string
+  image?: string
+  icons?: string
+  noIndex?: boolean
+} = {}): Metadata {
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [{ url: image }],
+      //type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+      creator: '@jassibacha'
+    },
+    icons,
+    metadataBase: new URL("https://askpdf.jbdev.ca"),
+    themeColor: '#FFF',
+    ...(noIndex && {
+      robots: {
+        index: false,
+        follow: false
+      },
+    })
+  }
 }

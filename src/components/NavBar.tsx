@@ -4,6 +4,7 @@ import Link from "next/link"
 import MaxWidthWrapper from "./MaxWidthWrapper"
 import { buttonVariants } from "./ui/button"
 import UserAccountNav from "./UserAccountNav"
+import MobileNav from "./MobileNav"
 
 async function NavBar() {
     const { getUser } = getKindeServerSession()
@@ -17,7 +18,7 @@ async function NavBar() {
                         <span>AskPDF</span>
                     </Link>
 
-                    {/* TODO: Add mobile navbar */}
+                    <MobileNav isAuth={!!user} />
 
                     <div className="hidden items-center space-x-4 sm:flex">
                         {!user ? <>
