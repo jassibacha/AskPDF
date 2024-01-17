@@ -282,3 +282,56 @@ export const config = {
     matcher: ['/dashboard/:path*', '/auth-callback']
 };
 ```
+
+
+
+
+## constructMetadata() themeColor error [[10:50:08](https://youtu.be/ucX2zXAZ1I0?si=XMvj_Di_KoTskR6Q&t=39008)]
+
+This threw an error when I deployed to Vercel.
+
+```
+⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+```
+
+The fix was to move themeColor to it's own function, generateViewport(), and then also export that and impot it into layout.tsx
+
+**`src/lib/utils.ts`**
+```tsx
+export function constructMetadata({
+  // ...
+}: {
+  // ...
+} = {}): Metadata {
+
+  return {
+    // ... remove themeColor from here ...
+  }
+}
+
+export function generateViewport() {
+  return {
+    themeColor: '#FFF', // place it here
+  };
+}
+```
+
+**`src/app/layout.tsx`**
+```tsx
+// ... other imports ...
+import { cn, constructMetadata, generateViewport } from '@/lib/utils'
+
+export const metadata = constructMetadata()
+export const viewport = generateViewport();
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    // ...
+  )
+}
+```
