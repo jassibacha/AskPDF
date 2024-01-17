@@ -73,13 +73,19 @@ export const appRouter = router({
 
         // Get the user's subscription plan
         const subscriptionPlan = await getUserSubscriptionPlan()
+        console.log('createStripeSession - Subscription Plan Data:', subscriptionPlan)
+
+        console.log(`subscriptionPlan.isSubscribed: ${subscriptionPlan.isSubscribed} // dbUser.stripeCustomerId: ${dbUser.stripeCustomerId}`)
 
         if (subscriptionPlan.isSubscribed && dbUser.stripeCustomerId) {
+            console.log('subscribed + customerId, making billing portal session')
             // Create a billing portal session if the user is already subscribed and has a Stripe customer ID
             const stripeSession = await stripe.billingPortal.sessions.create({
                 customer: dbUser.stripeCustomerId,
                 return_url: billingUrl
             })
+
+            console.log('createStripeSession - Stripe Session Data:', stripeSession)
 
             return { url: stripeSession.url }
         }
