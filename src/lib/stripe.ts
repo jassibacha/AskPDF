@@ -9,6 +9,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
 })
 
 export async function getUserSubscriptionPlan() {
+  console.log('getUserSubscriptionPlan init')
   const { getUser } = getKindeServerSession()
   const user = await getUser()
 
@@ -20,6 +21,8 @@ export async function getUserSubscriptionPlan() {
       stripeCurrentPeriodEnd: null,
     }
   }
+
+  console.log('getUserSubscriptionPlan user:', user)
 
   const dbUser = await db.user.findFirst({
     where: {
@@ -36,11 +39,16 @@ export async function getUserSubscriptionPlan() {
     }
   }
 
+
+  console.log('getUserSubscriptionPlan dbUser:', dbUser)
+
   const isSubscribed = Boolean(
     dbUser.stripePriceId &&
       dbUser.stripeCurrentPeriodEnd && // 86400000 = 1 day
       dbUser.stripeCurrentPeriodEnd.getTime() + 86_400_000 > Date.now()
   )
+
+  console.log('getUserSubscriptionPlan isSubscribed:', isSubscribed)
 
   const plan = isSubscribed
     ? PLANS.find((plan) => plan.price.priceIds.test === dbUser.stripePriceId)

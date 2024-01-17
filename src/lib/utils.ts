@@ -62,7 +62,6 @@ export function constructMetadata({
     },
     icons,
     metadataBase: new URL("https://askpdf.jbdev.ca"),
-    themeColor: '#FFF',
     ...(noIndex && {
       robots: {
         index: false,
@@ -70,4 +69,10 @@ export function constructMetadata({
       },
     })
   }
+}
+
+export function generateViewport() {
+  return {
+    themeColor: '#FFF',
+  };
 }
