@@ -252,6 +252,6 @@ Luckily this is a quick fix, just go into your `package.json` and do an update t
   "build": "next build",
   "start": "next start",
   "lint": "next lint",
-    "postinstall": "prisma generate"
+  "postinstall": "prisma generate"
 },
 ```
