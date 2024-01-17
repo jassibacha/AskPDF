@@ -1,7 +1,7 @@
-import { authMiddleware } from "@kinde-oss/kinde-auth-nextjs/server"
+import { authMiddleware } from '@kinde-oss/kinde-auth-nextjs/server'
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/auth-callback"] // Urls we want to force auth
+  matcher: ['/dashboard/:path*', '/auth-callback'],
 }
 
 export default authMiddleware
