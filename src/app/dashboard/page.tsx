@@ -25,6 +25,8 @@ async function Page() {
 
     const subscriptionPlan = await getUserSubscriptionPlan()
 
+    console.log('Dashboard - Subscription Plan Data:', subscriptionPlan)
+
     return (
         <div><Dashboard subscriptionPlan={subscriptionPlan} /></div>
     )
