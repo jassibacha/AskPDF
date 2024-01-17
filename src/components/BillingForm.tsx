@@ -15,6 +15,9 @@ interface BillingFormProps {
 }
 
 function BillingForm({ subscriptionPlan }: BillingFormProps) {
+  // Log the props to see what the component received
+  console.log('BillingForm Props:', subscriptionPlan)
+  
   const { toast } = useToast()
 
   const { mutate: createStripeSession, isLoading } = trpc.createStripeSession.useMutation({
