@@ -335,3 +335,14 @@ export default function RootLayout({
   )
 }
 ```
+
+## "Manage Subscription" button on billing page wasn't working
+
+Was getting a status 500 every time I tried to click that button `[POST] /api/trpc/createStripeSession?batch=1&nxtPtrpc=createStripeSession status=500`
+
+Checked Stripe logs once I figured out where to navigate
+```
+⚠ invalid_request_error
+You can’t create a portal session in test mode until you save your customer portal settings in test mode at https://dashboard.stripe.com/test/settings/billing/portal.
+```
+Going to that URL and simply pressing save fixed things.
