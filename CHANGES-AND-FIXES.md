@@ -249,9 +249,9 @@ Luckily this is a quick fix, just go into your `package.json` and do an update t
 ```json
 "scripts": {
   "dev": "next dev",
-  "build": "prisma generate && next build", // Add prisma generate here
+  "build": "next build",
   "start": "next start",
   "lint": "next lint",
+    "postinstall": "prisma generate"
 },
 ```
-After updating the build command it was smooth sailing for me.
