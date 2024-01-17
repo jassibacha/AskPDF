@@ -212,7 +212,7 @@ Message.displayName = 'Message'; // Add this line!
 
 export default Message;
 ```
-
+*Note: This ends up getting fixed later on in the video.*
 
 ## Stripe getUserSubscriptionPlan() apiVersion issue [[9:29:26](https://youtu.be/ucX2zXAZ1I0?si=KjHQz1F9XiJxEWrR&t=32028)]
 
@@ -231,3 +231,27 @@ export async function getUserSubscriptionPlan() {
   // ... function logic ...
 }
 ```
+
+## Vercel Deployment - Prisma Caching Issues [[9:59:29](https://youtu.be/ucX2zXAZ1I0?si=-4x9CTDb3fxv3Ox1&t=35969)]
+
+Trying to deploy was giving me a much different issue than Josh's video, I had prisma showing up in my `package.json` just fine, but I was receiving this error when trying to deploy:
+
+```
+Prisma has detected that this project was built on Vercel, which caches dependencies.
+This leads to an outdated Prisma Client because Prisma's auto-generation isn't triggered.
+To fix this, make sure to run the `prisma generate` command during the build process.
+
+Learn how: https://pris.ly/d/vercel-build
+```
+
+Luckily this is a quick fix, just go into your `package.json` and do an update to your `"scripts"` area to include prisma generation in your build.
+
+```json
+"scripts": {
+  "dev": "next dev",
+  "build": "prisma generate && next build", // Add prisma generate here
+  "start": "next start",
+  "lint": "next lint",
+},
+```
+After updating the build command it was smooth sailing for me.
