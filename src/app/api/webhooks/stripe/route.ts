@@ -15,10 +15,8 @@ export async function POST(request: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET || ''
     )
-    console.log('Webhook event received:', event); // Log the event
 
   } catch (err) {
-    console.error('Error in Stripe webhook:', err); // Log any errors
     return new Response(
       `Webhook Error: ${
         err instanceof Error ? err.message : 'Unknown Error'
@@ -36,8 +34,6 @@ export async function POST(request: Request) {
   }
 
   if (event.type === 'checkout.session.completed') {
-    console.log('Checkout session completed event:', event); // Additional log for this specific event
-        
     const subscription =
       await stripe.subscriptions.retrieve(
         session.subscription as string
@@ -57,8 +53,6 @@ export async function POST(request: Request) {
   }
 
   if (event.type === 'invoice.payment_succeeded') {
-    console.log('Invoice payment succeeded event:', event); // Additional log for this specific event
-        
     // Retrieve the subscription details from Stripe.
     const subscription =
       await stripe.subscriptions.retrieve(
