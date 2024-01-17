@@ -255,3 +255,30 @@ Luckily this is a quick fix, just go into your `package.json` and do an update t
   "postinstall": "prisma generate"
 },
 ```
+*Note: He ends up adding this pretty much right after so I jumped the gun a bit.*
+
+## Kinde authMiddleware not working [[10:04:06](https://youtu.be/ucX2zXAZ1I0?si=ShNpl2HBH9fAq8gi&t=36246)]
+So as soon as I set up this authMiddleware I could no longer access my dashboard while logged in, just got redirected to the homepage over and over again. After checking the [Kinde docs](https://kinde.com/docs/developer-tools/nextjs-sdk/#default-page-protection) I found that they've updated this quite a bit.
+
+**`src/middleware.ts`**
+
+**ORIGINAL:**
+```ts
+import { authMiddleware } from '@kinde-oss/kinde-auth-nextjs/server'
+
+export const config = {
+  matcher: ['/dashboard/:path*', '/auth-callback'],
+}
+
+export default authMiddleware
+```
+**NEW VERSION:**
+```ts
+import {withAuth} from "@kinde-oss/kinde-auth-nextjs/middleware";
+export default function middleware(req) {
+    return withAuth(req);
+}
+export const config = {
+    matcher: ['/dashboard/:path*', '/auth-callback']
+};
+```
